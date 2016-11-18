@@ -78,7 +78,7 @@ public class Serial {
 
         new Thread(new Runnable() {
             String readMsg;
-
+            String tmp = "";
             @Override
             public void run() {
                 while (!StopFlag){
@@ -91,6 +91,15 @@ public class Serial {
                             new Handler(Looper.getMainLooper()).post(new Runnable() {
                                 @Override
                                 public void run() {
+
+                                    /*
+                                    if(readMsg.contains("\n")){
+                                        serialListener.read(tmp);
+                                        tmp="";
+                                    }else {
+                                        tmp+=readMsg;
+                                    }
+                                    */
                                     serialListener.read(readMsg);
                                 }
                             });
