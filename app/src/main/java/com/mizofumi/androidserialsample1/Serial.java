@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -58,6 +59,8 @@ public class Serial {
         if (serialListener == null){
             throw new NullPointerException("SerialListenerが定義されていません");
         }
+
+        Log.d("UUID", String.valueOf(uuid.node()));
         try {
             mSocket = mDevice.createRfcommSocketToServiceRecord(uuid);
             mSocket.connect();
@@ -72,13 +75,17 @@ public class Serial {
         }
     }
 
-    public void run() throws NullPointerException{
+    public void run(){
+        run(1000);
+    }
+
+    public void run(final int delay) throws NullPointerException{
         if (serialListener == null){
             throw new NullPointerException("SerialListenerが定義されていません");
         }
         new Thread(new Runnable() {
             String readMsg;
-
+            String tmp = "";
             @Override
             public void run() {
                 while (!StopFlag){
@@ -91,6 +98,15 @@ public class Serial {
                             new Handler(Looper.getMainLooper()).post(new Runnable() {
                                 @Override
                                 public void run() {
+
+                                    /*
+                                    if(readMsg.contains("\n")){
+                                        serialListener.read(tmp);
+                                        tmp="";
+                                    }else {
+                                        tmp+=readMsg;
+                                    }
+                                    */
                                     serialListener.read(readMsg);
                                 }
                             });
@@ -102,6 +118,12 @@ public class Serial {
                     } catch (IOException e) {
                         e.printStackTrace();
                         serialListener.read_failed("IOエラー:"+e.getMessage());
+                    }
+
+                    try {
+                        Thread.sleep(delay);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
                 }
                 Runnable = false;
