@@ -43,6 +43,16 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
+            public void write_success() {
+
+            }
+
+            @Override
+            public void write_failed(String s) {
+
+            }
+
+            @Override
             public void stoped() {
 
             }

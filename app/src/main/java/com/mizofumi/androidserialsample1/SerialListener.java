@@ -9,6 +9,8 @@ public interface SerialListener {
     void open_failed(String errorMessage);
     void read(String data);
     void read_failed(String errorMessage);
+    void write_success();
+    void write_failed(String s);
     void stoped();
     void closed();
     void close_failed(String s);
