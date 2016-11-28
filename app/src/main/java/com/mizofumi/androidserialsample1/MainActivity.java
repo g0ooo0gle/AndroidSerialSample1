@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         View content_view = findViewById(R.id.content_main);
 
+        textView = (TextView)content_view.findViewById(R.id.textView);
         linechart = (LineChart) content_view.findViewById(R.id.linechart);
 
 
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 if (!serial.isConnected()){
                                     serial.open(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
-                                    serial.run(500);
+                                    serial.run(100);
                                 }else {
                                     if (serial.isRunnable()){
                                         serial.stop();
@@ -136,21 +137,42 @@ public class MainActivity extends AppCompatActivity {
                             Log.d("Recived",datas[0]+","+datas[1]);
 
                             //分けた配列0番目の処理
+
+                            textView.setText(datas[1]);
                             values.add(new Entry(counter,Float.valueOf(datas[1])));
 
-                            LineDataSet set1 = new LineDataSet(values,"AIUEO");
-                            set1.enableDashedLine(10f, 5f, 0f);
-                            set1.enableDashedHighlightLine(10f, 5f, 0f);
-                            set1.setColor(Color.BLACK);
-                            set1.setCircleColor(Color.BLACK);
+
+                            //chart初期化
+                            //touch gesture設定
+                            linechart.setTouchEnabled(true);
+                            // スケーリング&ドラッグ設定
+                            linechart.setDragEnabled(true);
+                            linechart.setScaleEnabled(true);
+                            linechart.setDrawBorders(true);
+                            //背景
+                            linechart.setDrawGridBackground(false);
+
+                            LineDataSet set1 = new LineDataSet(values,"波形");
+
+                            //点線設定
+                            //set1.enableDashedLine(10f, 5f, 0f);
+                            //set1.enableDashedHighlightLine(10f, 5f, 0f);
+
+                            set1.setColor(Color.GREEN);
+                            set1.setDrawValues(false);          //値ラベル表示しない
                             set1.setLineWidth(1f);
+
+                            //プロット点設定
                             set1.setCircleRadius(3f);
                             set1.setDrawCircleHole(false);
+                            set1.setCircleColor(Color.GREEN);
+
                             set1.setValueTextSize(9f);
-                            set1.setDrawFilled(true);
+                            set1.setDrawFilled(false);
                             set1.setFormLineWidth(1f);
                             set1.setFormLineDashEffect(new DashPathEffect(new float[]{10f, 5f}, 0f));
                             set1.setFormSize(15.f);
+
 
                             ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
                             dataSets.add(set1);
@@ -166,7 +188,9 @@ public class MainActivity extends AppCompatActivity {
                             //最新データまで移動
                             linechart.moveViewToX(lineData.getEntryCount());
 
+
                             counter++;
+
                         }
 
 
