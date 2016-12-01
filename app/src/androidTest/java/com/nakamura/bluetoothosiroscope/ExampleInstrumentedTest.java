@@ -1,4 +1,4 @@
-package com.mizofumi.androidserialsample1;
+package com.nakamura.bluetoothosiroscope;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

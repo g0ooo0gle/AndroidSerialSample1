@@ -1,4 +1,4 @@
-package com.mizofumi.androidserialsample1;
+package com.nakamura.bluetoothosiroscope;
 
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package com.mizofumi.androidserialsample1;
+package com.nakamura.bluetoothosiroscope;
 
 /**
  * Created by mizofumi on 2016/11/18.
