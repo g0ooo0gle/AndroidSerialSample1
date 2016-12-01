@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     TextView textView;
     LineChart linechart;
     FloatingActionButton fab;
+    boolean isBackPressed = false;
 
 
 
@@ -141,6 +142,12 @@ public class MainActivity extends AppCompatActivity {
                             textView.setText(datas[1]);
                             values.add(new Entry(counter,Float.valueOf(datas[1])));
 
+                            Log.d("MainAcitivity", String.valueOf(values.size()));
+
+                            if (values.size() > 100){
+                                linechart.getLineData().getDataSets().get(0).removeFirst();
+                            }
+
 
                             //chart初期化
                             //touch gesture設定
@@ -176,6 +183,8 @@ public class MainActivity extends AppCompatActivity {
 
                             ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
                             dataSets.add(set1);
+
+                            dataSets.get(0).getXMax();
 
                             LineData lineData = new LineData(dataSets);
 
@@ -227,6 +236,9 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this,"こねくしょんkillしたで",Toast.LENGTH_SHORT).show();
                 fab.setImageResource(R.drawable.ic_sync_white_48dp);
                 fab.show();
+                if (isBackPressed){
+                    finish();
+                }
             }
 
             @Override
@@ -236,8 +248,38 @@ public class MainActivity extends AppCompatActivity {
                 fab.show();
             }
         });
+
+
+
     }
 
+    @Override
+    public void onBackPressed() {
+
+
+        if(serial!= null){
+            if (serial.isRunnable()){
+                isBackPressed =true;
+                serial.stop();
+                serial.close();
+
+            }else{
+
+                finish();
+            }
+
+        }else{
+            finish();
+        }
+
+        super.onBackPressed();
+
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
