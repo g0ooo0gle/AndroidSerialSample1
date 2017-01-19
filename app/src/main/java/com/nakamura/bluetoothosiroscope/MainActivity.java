@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -101,10 +102,11 @@ public class MainActivity extends AppCompatActivity {
         serial = new Serial("BT04-A");
         serial.setSerialListener(new SerialListener() {
 
-            ArrayList<Entry> xtimes = new ArrayList<Entry>();
+            ArrayList<Float> xtimes = new ArrayList<Float>();//実験
             ArrayList<Entry> values = new ArrayList<Entry>();
 
             //要素のカウント
+            //オーバーフロー時考慮していない（動作未確認）
             int counter = 0 ;
 
             @Override
@@ -141,14 +143,21 @@ public class MainActivity extends AppCompatActivity {
                             //分けた配列0番目の処理
 
                             textView.setText(datas[1]);
-                            xtimes.add(new Entry(counter,Float.valueOf(datas[0])));//サンプル時間リスト追加
-                            values.add(new Entry(counter,Float.valueOf(datas[1])));//データ値リストに追加
+                            xtimes.add(counter,Float.valueOf(datas[0]));//サンプル時間リスト追加
+                            //values.add(new Entry(counter,Float.valueOf(datas[1])));//データ値リストに追加
+                            values.add(new Entry(Float.valueOf(datas[0]),Float.valueOf(datas[1])));//データ値リストに追加(x,y)
 
-                            Log.d("MainAcitivity", String.valueOf(values.size()));
+                            Log.d("debugサンプル時間のリスト要素数:", String.valueOf(xtimes.size()));
+                            Log.d("debugデータ値のリスト要素数", String.valueOf(values.size()));
 
                             //画面描画時に波形が動き始める値の調整用
+                            //先頭の値削除
                             if (values.size() > 100){
                                 linechart.getLineData().getDataSets().get(0).removeFirst();
+                            }
+
+                            if (Float.valueOf(datas[0]) == 0){
+                                linechart.invalidate(); // refresh
                             }
 
 
@@ -161,6 +170,9 @@ public class MainActivity extends AppCompatActivity {
                             linechart.setDrawBorders(true);
                             //背景
                             linechart.setDrawGridBackground(false);
+
+                            XAxis xAxis = linechart.getXAxis();
+                            xAxis.setTextColor(Color.BLACK);
 
                             LineDataSet set1 = new LineDataSet(values,"波形");
 
@@ -185,6 +197,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                             ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
+
                             dataSets.add(set1);
 
                             dataSets.get(0).getXMax();
@@ -205,9 +218,14 @@ public class MainActivity extends AppCompatActivity {
 
                         }
 
-
                     }
+                    else if (data.contains("e")){
+                        linechart.invalidate(); // refresh
+                    }
+
                 }catch (NumberFormatException e){
+
+                    Toast.makeText(MainActivity.this,"format error"+ data,Toast.LENGTH_SHORT).show();
 
                 }
 
