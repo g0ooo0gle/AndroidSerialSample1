@@ -101,7 +101,9 @@ public class MainActivity extends AppCompatActivity {
         serial = new Serial("BT04-A");
         serial.setSerialListener(new SerialListener() {
 
+            ArrayList<Entry> xtimes = new ArrayList<Entry>();
             ArrayList<Entry> values = new ArrayList<Entry>();
+
             //要素のカウント
             int counter = 0 ;
 
@@ -139,10 +141,12 @@ public class MainActivity extends AppCompatActivity {
                             //分けた配列0番目の処理
 
                             textView.setText(datas[1]);
-                            values.add(new Entry(counter,Float.valueOf(datas[1])));
+                            xtimes.add(new Entry(counter,Float.valueOf(datas[0])));//サンプル時間リスト追加
+                            values.add(new Entry(counter,Float.valueOf(datas[1])));//データ値リストに追加
 
                             Log.d("MainAcitivity", String.valueOf(values.size()));
 
+                            //画面描画時に波形が動き始める値の調整用
                             if (values.size() > 100){
                                 linechart.getLineData().getDataSets().get(0).removeFirst();
                             }

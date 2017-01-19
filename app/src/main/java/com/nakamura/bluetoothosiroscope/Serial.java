@@ -16,6 +16,8 @@ import java.util.UUID;
 
 /**
  * Created by mizofumi on 2016/11/18.
+ * Edited by Nakamura
+ *
  */
 
 public class Serial {
@@ -90,7 +92,7 @@ public class Serial {
             public void run() {
                 while (!StopFlag){
                     Runnable = true;
-                    final byte buf[] = new byte[1024];
+                    final byte buf[] = new byte[65535];
                     try {
                         final int num = mmInStream.read(buf);
                         readMsg = new String(buf, 0, num);
